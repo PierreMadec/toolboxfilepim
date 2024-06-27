@@ -1,1 +1,4 @@
 ^dev$
+^LICENSE\.md$
+^toolboxfilepim\.Rproj$
+^\.Rproj\.user$

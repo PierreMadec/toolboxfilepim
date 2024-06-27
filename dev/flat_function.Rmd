@@ -1,0 +1,71 @@
+---
+title: "flat_function.Rmd empty"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r development, include=FALSE}
+library(testthat)
+```
+
+```{r development-load}
+# Load already included functions if relevant
+pkgload::load_all(export_all = FALSE)
+```
+
+# function
+
+```{r function-function}
+#' function get_one_file_size
+#'
+#' @param filename un nom de fichier
+#'
+#' @return dataframe un dateframe contenant le nom du fichier et sa taille
+#' @export
+#'
+#' @examples
+
+get_one_file_size <- function(filename) {
+  file_size <- file.size(filename)
+  result <- data.frame(
+    filename = filename,
+    size = file_size,
+    stringsAsFactors = FALSE
+  )
+  return(result)
+}
+```
+
+```{r examples-function}
+mon_dossier_temp_aleatoire <- tempfile(pattern = "toto")
+dir.create(mon_dossier_temp_aleatoire)
+un_fichier <- file.path(mon_dossier_temp_aleatoire, "monfichier.csv")
+get_one_file_size(un_fichier)
+```
+
+```{r tests-function}
+test_that("get_one_file_size fonctionne correctement pour un fichier existant", {
+  mon_dossier_temp_aleatoire <- tempfile(pattern = "toto")
+  dir.create(mon_dossier_temp_aleatoire)
+  temp_file <- tempfile("example_", tmpdir = mon_dossier_temp_aleatoire, fileext = ".txt")
+    writeLines("Ceci est un fichier temporaire pour tester la fonction get_one_file_size.", temp_file)
+  expected_size <- file.size(temp_file)
+  result <- get_one_file_size(temp_file)
+  expect_true(is.data.frame(result))
+  expect_equal(ncol(result), 2)
+  expect_equal(names(result), c("filename", "size"))
+  expect_equal(result$filename, temp_file)
+  expect_equal(result$size, expected_size)
+  unlink(temp_file)
+  unlink(mon_dossier_temp_aleatoire, recursive = TRUE)
+})
+```
+
+
+```{r development-inflate, eval=FALSE}
+# Run but keep eval=FALSE to avoid infinite loop
+# Execute in the console directly
+fusen::inflate(flat_file = "dev/flat_function.Rmd", vignette_name = "Go further")
+```
+
